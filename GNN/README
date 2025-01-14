@@ -1,1 +1,6 @@
+Demo describes different options for running the pipeline
+Reggnn contains the GNN model and evaluators contains the evaluation functions
 
+
+The mart_export files contain data about regulatory sequences for each gene and the UTR files take this data to form the adjacency matrices
+for the GNNs based on how similar these sequences are for different genes
