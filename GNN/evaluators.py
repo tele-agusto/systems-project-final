@@ -38,22 +38,6 @@ def evaluate_RegGNN(sample_selection=False, shuffle=False, random_state=None,
     
     # 5' utr adjacency matrix
     adj_t = torch.tensor(utr.adjacency)
-    # print(utr.adjacency[64,:])
-    # print(utr.adjacency[65,:])
-    # print(sum(adj_t))
-    # print(sum(sum(adj_t)))
-
-    ## adding extra nodes for other genes
-    # adj_matrix = np.hstack((utr.adjacency, np.ones((110,16))))
-    # adj_matrix = np.vstack((adj_matrix, np.ones((16,126))))
-    # adj_matrix = np.hstack((adj_matrix, np.ones((126,1))))
-    # adj_matrix = np.vstack((adj_matrix, np.ones((1,127))))
-
-    # adj_t = torch.tensor(adj_matrix)
-    # print(adj_t.shape)
-    # adjacency = pd.read_csv('/content/drive/MyDrive/adjacency.csv')
-    # adjacency = adjacency.to_numpy()
-    # adj_t = torch.tensor(adjacency)
     
     
     ## fully-connected adjacency matrix
@@ -86,8 +70,6 @@ def evaluate_RegGNN(sample_selection=False, shuffle=False, random_state=None,
     # df_cite_inputs = df_cite_inputs.iloc[0:1000,:]
     df_meta = pd.read_csv(return_h5_path('metadata.csv'), index_col='cell_id')
 
-    # inputs_gnn = pd.read_csv('/content/drive/MyDrive/denoised_scrnaseqscimpute_count.csv',header=0,index_col=0)
-    # inputs_gnn = inputs_gnn.transpose()
     
     # get indexes for samples collected from each donor on a given day
     df_meta = df_meta[df_meta.technology == 'citeseq']
@@ -132,32 +114,9 @@ def evaluate_RegGNN(sample_selection=False, shuffle=False, random_state=None,
     print(inputs_gnn.columns)
     print(to_drop)
 
-    # MLP delete some data
-    # a = 110
-    # c = []
-    # for j in range(47):
-    #   a -= 1
-    #   b = random.randint(0, a)
-    #   d = str(inputs_gnn.columns[b])
-    #   print(d)
-    #   c.append(d)
-      # del inputs_gnn[inputs_gnn.columns[b]]
-    
-    
-    # print(c)
-    # inputs_gnn = inputs_gnn.drop(inputs_gnn[c], axis = 1)
-    # # inputs_gnn = inputs_gnn_new
-    # print(inputs_gnn.shape)
+   
     neurons = inputs_gnn.shape[1]
-    
-    
-    
 
-    # inputs_gnn = np.delete(inputs_gnn, obj=b, axis=1)
-    # inputs_gnn = inputs_gnn[:,b]
-    # print(inputs_gnn.shape) 
-
-    # print(inputs_gnn.columns)
     inputs_gnn_1 = inputs_gnn.loc[df_meta_2_32606.index]
     inputs_gnn_2 = inputs_gnn.loc[df_meta_3_32606.index]
     inputs_gnn_3 = inputs_gnn.loc[df_meta_4_32606.index]
@@ -168,91 +127,22 @@ def evaluate_RegGNN(sample_selection=False, shuffle=False, random_state=None,
     inputs_gnn_8 = inputs_gnn.loc[df_meta_3_31800.index]
     inputs_gnn_9 = inputs_gnn.loc[df_meta_4_31800.index]
     
-    # inputs_gnn_1 = inputs_gnn_1.sample(frac=1)
-    # inputs_gnn_2 = inputs_gnn_2.sample(frac=1)
-    # inputs_gnn_3 = inputs_gnn_3.sample(frac=1)
-    # inputs_gnn_4 = inputs_gnn_4.sample(frac=1)
-    # inputs_gnn_5 = inputs_gnn_5.sample(frac=1)
-    # inputs_gnn_6 = inputs_gnn_6.sample(frac=1)
-    # inputs_gnn_7 = inputs_gnn_7.sample(frac=1)
-    # inputs_gnn_8 = inputs_gnn_8.sample(frac=1)
-    # inputs_gnn_9 = inputs_gnn_9.sample(frac=1)
+ 
     
     print(inputs_gnn.columns)
     print(utr.utrs.Full_gene)
     print(utr.utrs_sorted.Full_gene)
     
 
-    # donor cv
-    # inputs_donor1 = np.vstack((inputs_gnn_1,inputs_gnn_2,inputs_gnn_3))
-    # inputs_donor2 = np.vstack((inputs_gnn_4,inputs_gnn_5,inputs_gnn_6))
-    # inputs_donor3 = np.vstack((inputs_gnn_7,inputs_gnn_8,inputs_gnn_9))
-    # inputs_gnn = np.vstack((inputs_donor1, inputs_donor2, inputs_donor3))
-    
-    # inputs_gnn = np.vstack((inputs_gnn_1,inputs_gnn_2,inputs_gnn_3,inputs_gnn_4,inputs_gnn_5,inputs_gnn_6,inputs_gnn_7,inputs_gnn_8,inputs_gnn_9))
-    
     # day cv
     inputs_day1 = np.vstack((inputs_gnn_1,inputs_gnn_4,inputs_gnn_7))
     inputs_day2 = np.vstack((inputs_gnn_2,inputs_gnn_5,inputs_gnn_8))
     inputs_day3 = np.vstack((inputs_gnn_3,inputs_gnn_6,inputs_gnn_9))
     inputs_gnn = np.vstack((inputs_day1, inputs_day2, inputs_day3))
     # inputs_gnn = np.vstack((inputs_gnn_1,inputs_gnn_4,inputs_gnn_7,inputs_gnn_2,inputs_gnn_5,inputs_gnn_8,inputs_gnn_3,inputs_gnn_6,inputs_gnn_9))
-    
-    ## sex features
-    # male_1 = np.zeros((len(inputs_gnn_1) + len(inputs_gnn_2) + len(inputs_gnn_3),1))
-    # female_1 = np.ones((len(inputs_gnn_4) + len(inputs_gnn_5) + len(inputs_gnn_6),1))
-    # male_2 = np.zeros((len(inputs_gnn_7) + len(inputs_gnn_8) + len(inputs_gnn_9),1))
-    # sex = np.vstack((male_1,female_1,male_2))
-    # inputs_gnn = np.hstack((inputs_gnn, sex))
-    inputs_gnn = inputs_gnn[0:70656,:]
-    # with_edges = [1, 8, 13, 17,19,22,27,28,29,36,40,51,54,57,59,60,75,88,91, 98,101,106,107]
-    with_edges = []
-    # for i in range(len(adj_t)):
-    #   if sum(adj_t[i])>4:
-    #     with_edges.append(i)
-    # print(with_edges)
-    # for j in range(len(with_edges)):
-    #   for i in range(len(inputs_gnn)):
-    #     inputs_gnn[i,with_edges[j]] = 0
-    #   print(sum(inputs_gnn[:,with_edges[j]]))
-    # print(inputs_gnn.shape)
-
-    ## for GNN delete some data
-    # a = 110
-    # for j in range(40):
-    #   a -= 1
-    #   b = random.randint(0, a)
-    #   for i in range(len(inputs_gnn)):
-    #     inputs_gnn[i,b] = 0
-
-    ## for MLP delete some data
-    # a = 110
-    # b = []
-    # for j in range(10):
-    #   a -= 1
-    #   b.append(random.randint(0, a))
-
-    
-    
-    
-    # # inputs_gnn = np.delete(inputs_gnn, obj=b, axis=1)
-    # inputs_gnn = inputs_gnn[:,b]
-    print(inputs_gnn.shape)
 
 
-    # train_inputs_gnn = np.vstack((inputs_gnn_1,inputs_gnn_2,inputs_gnn_3,inputs_gnn_4,inputs_gnn_5,inputs_gnn_6))
-    # test_inputs_gnn = np.vstack((inputs_gnn_7,inputs_gnn_8,inputs_gnn_9))
-    # shuffle(train_inputs_gnn)
-    # shuffle(test_inputs_gnn)
-    ## add nodes for genes without proteins
-    # rest_of_data = PCA(n_components=16).fit_transform(inputs_gnn)
-    # print(inputs_gnn.shape)
-    # print(rest_of_data.shape)
-    # inputs_gnn = np.hstack((inputs_gnn, rest_of_data))
-    # rest_of_data_train = PCA(n_components=16).fit_transform(train_inputs_gnn)
-    # rest_of_data_test = PCA(n_components=16).fit_transform(test_inputs_gnn)
-    # train_inputs_gnn = np.hstack((train_inputs_gnn, rest_of_data_train))
-    # test_inputs_gnn = np.hstack((inputs_gnn, rest_of_data_test))
+  
     to_drop_2 = [column for column in targets.columns if column not in list(utr.utrs.Protein)]
     print(len(to_drop_2))
     print(inputs_gnn.shape)
@@ -277,13 +167,6 @@ def evaluate_RegGNN(sample_selection=False, shuffle=False, random_state=None,
     targets_gnn = np.vstack((targets_gnn_1,targets_gnn_4,targets_gnn_7,targets_gnn_2,targets_gnn_5,targets_gnn_8,targets_gnn_3,targets_gnn_6,targets_gnn_9))
     targets_gnn = targets_gnn[0:70656,:]
     
-    # impute missing values
-    # targets_gnn = inputs_gnn
-    # for j in range(len(inputs_gnn)/5):
-    #   b = random.randint(0, 109)
-    #   for i in range(len(inputs_gnn)):
-    #     inputs_gnn[i,b] = 0
-    
     # inputs_gnn = torch.tensor(inputs_gnn.values)
     inputs_gnn = torch.tensor(inputs_gnn)
     inputs_gnn = torch.t(inputs_gnn)
@@ -297,11 +180,6 @@ def evaluate_RegGNN(sample_selection=False, shuffle=False, random_state=None,
     print(targets_gnn.shape)
 
 
-    # pre_pyg_data = torch_geometric.data.Data(x=inputs_gnn,edge_index=edge_index,edge_attr=None))
-    # transform = FeaturePropagation(missing_mask = np.where(pre_pyg_data.x == 0, 0, 1))
-    # pre_pyg_data = transform(pre_pyg_data)
-    
-    # inputs_gnn = pre_pyg_data.x
     # load batches into Data object for gnn training
     pyg_data = []
     for i in range(552):
@@ -310,16 +188,6 @@ def evaluate_RegGNN(sample_selection=False, shuffle=False, random_state=None,
                                                   y=torch.round(targets_gnn[:, 128 * i:128 * (i + 1)].float(),
                                                                 decimals=3), edge_index=edge_index,
                                                   edge_attr=None))
-
-    ## Feature propagation
-    # print(sum(pyg_data[0].x))
-    # print(pyg_data[0].x)
-    # print(np.where(pyg_data[0].x.int() < 0.1, 1, 0))
-    # for i in range(552):
-    #   transform = FeaturePropagation(missing_mask = torch.tensor(np.where(pyg_data[i].x.int() < 0.1, 1, 0)))
-    #   pyg_data[i] = transform(pyg_data[i])
-    # print(pyg_data[0].x)
-    # print(sum(pyg_data[0].x))
 
 
     data = pyg_data
