@@ -39,7 +39,6 @@ def evaluate_RegGNN(sample_selection=False, shuffle=False, random_state=None,
     # 5' utr adjacency matrix
     adj_t = torch.tensor(utr.adjacency)
     
-    
     ## fully-connected adjacency matrix
     # adj_t = torch.ones(110,110)
     # adj_t = torch.ones(126,126)
@@ -48,13 +47,6 @@ def evaluate_RegGNN(sample_selection=False, shuffle=False, random_state=None,
     ## random adjacency matrix
     # adj_t = np.random.choice([0,1],12100,p=[0.99083,0.00917]).reshape(110,110)
 
-    # for i in range(len(adj_t)):
-    #     adj_t[i,i] = 1
-    # for i in range(len(adj_t)):
-    #     for j in range(len(adj_t)):
-    #         if adj_t[i,j] == 1:
-    #             adj_t[j,i] = 1
-    # print(sum(sum(adj_t)))
     adj_t = torch.tensor(adj_t)
    
     # convert adjacency matrix to edge index
@@ -88,18 +80,6 @@ def evaluate_RegGNN(sample_selection=False, shuffle=False, random_state=None,
     df_meta_3_31800 = df_meta_3[df_meta_3.donor == 31800]
     df_meta_4_31800 = df_meta_4[df_meta_4.donor == 31800]
 
-    # df_meta_2_32606 = df_meta_2_32606.sort_values(by=['cell_type'])
-    # df_meta_3_32606 = df_meta_3_32606.sort_values(by=['cell_type'])
-    # df_meta_4_32606 = df_meta_4_32606.sort_values(by=['cell_type'])
-    # df_meta_2_13176 = df_meta_2_13176.sort_values(by=['cell_type'])
-    # df_meta_3_13176 = df_meta_3_13176.sort_values(by=['cell_type'])
-    # df_meta_4_13176 = df_meta_4_13176.sort_values(by=['cell_type'])
-    # df_meta_2_31800 = df_meta_2_31800.sort_values(by=['cell_type'])
-    # df_meta_3_31800 = df_meta_3_31800.sort_values(by=['cell_type'])
-    # df_meta_4_31800 = df_meta_4_31800.sort_values(by=['cell_type'])
-    # indexes = np.hstack((df_meta_2_32606.index, df_meta_3_32606.index, df_meta_4_32606.index, df_meta_2_13176.index, df_meta_3_13176.index, df_meta_4_13176.index, df_meta_2_31800.index, df_meta_2_31800.index, df_meta_2_31800.index))
-    # df_meta = df_meta.iloc[0:5000,:]
-    print(df_meta.shape)
     
     # order inputs and targets by donor and day + drop columns of genes w/o corresponding proteins
     inputs = df_cite_inputs.loc[df_meta.index]
@@ -167,17 +147,11 @@ def evaluate_RegGNN(sample_selection=False, shuffle=False, random_state=None,
     targets_gnn = np.vstack((targets_gnn_1,targets_gnn_4,targets_gnn_7,targets_gnn_2,targets_gnn_5,targets_gnn_8,targets_gnn_3,targets_gnn_6,targets_gnn_9))
     targets_gnn = targets_gnn[0:70656,:]
     
-    # inputs_gnn = torch.tensor(inputs_gnn.values)
     inputs_gnn = torch.tensor(inputs_gnn)
     inputs_gnn = torch.t(inputs_gnn)
-    # targets_gnn = torch.tensor(targets_gnn.values)
     targets_gnn = torch.tensor(targets_gnn)
     targets_gnn = torch.t(targets_gnn)
     print(targets_gnn[0:2, 0:20])
-#     cell_numbers = [0,7476,6999,9511,6071,7643,8485,8395,6259,10149]
-#     cell_numbers_2 = [0,7476,14475,23986,30057,37700,46185,54580,60389,70988]
-    print(inputs_gnn.shape)
-    print(targets_gnn.shape)
 
 
     # load batches into Data object for gnn training
